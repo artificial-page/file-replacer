@@ -1,3 +1,9 @@
-# TS Base
+# File replacer
 
-⚓ TypeScript base project
+🚂 Replace strings in files
+
+## Install
+
+```bash
+npm install file-replacer
+```
