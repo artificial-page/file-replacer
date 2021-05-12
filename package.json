@@ -2,6 +2,7 @@
   "name": "file-replacer",
   "version": "0.1.0",
   "description": "Replace strings in files",
+  "main": "./dist/cjs/fileReplacer.js",
   "scripts": {
     "build": "./bin/build",
     "postinstall": "husky install; npm run build",
