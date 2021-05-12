@@ -25,12 +25,12 @@ describe("fileReplacer", () => {
           replace: (m, p1, p2) => p1.toUpperCase() + p2,
         },
         {
-          search: "L",
+          search: /l/i,
           replace: "B",
           condition: (body) => body.startsWith("LOREM"),
         },
         {
-          search: "R",
+          search: /r/i,
           replace: "N",
           condition: (body) => !body.startsWith("BOREM"),
         },
