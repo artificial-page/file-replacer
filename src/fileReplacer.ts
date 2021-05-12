@@ -18,8 +18,8 @@ export async function fileReplacer({
   createOnly,
 }: {
   fsExtra: typeof fsExtraType
-  src: string
   dest: string
+  src?: string
   data?: string
   replacements?: ReplacementOutputType
   createOnly?: boolean
