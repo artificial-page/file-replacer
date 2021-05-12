@@ -11,6 +11,7 @@ export type ReplacementOutputType = {
 
 export async function fileReplacer({
   fsExtra,
+  data,
   src,
   dest,
   replacements,
@@ -19,10 +20,11 @@ export async function fileReplacer({
   fsExtra: typeof fsExtraType
   src: string
   dest: string
+  data?: string
   replacements?: ReplacementOutputType
   createOnly?: boolean
 }): Promise<void> {
-  let data = (await fsExtra.readFile(src)).toString()
+  data = data ?? (await fsExtra.readFile(src)).toString()
 
   if (replacements) {
     for (const {
