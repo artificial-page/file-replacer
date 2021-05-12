@@ -10,4 +10,4 @@ npm install file-replacer
 
 ## 🏃 Usage
 
-[See `fileReplacerSpec.ts`](src/fileReplacerSpec.ts) for usage.
+See [`fileReplacerSpec.ts`](src/fileReplacerSpec.ts) for usage.

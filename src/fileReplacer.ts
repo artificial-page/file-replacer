@@ -1,19 +1,12 @@
 import { readFile, writeFile } from "fs"
 
-export type ReplacementConditionType = (
-  body: string
-) => boolean
-
-export interface ReplacementOutputElementType {
+export type ReplacementOutputType = {
   search: string | RegExp
   replace:
     | string
     | ((substring: string, ...args: any[]) => string)
-  condition?: ReplacementConditionType
-}
-
-export type ReplacementOutputType =
-  ReplacementOutputElementType[]
+  condition?: (body: string) => boolean
+}[]
 
 export async function fileReplacer({
   src,

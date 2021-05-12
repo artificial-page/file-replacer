@@ -19,6 +19,7 @@ describe("fileReplacer", () => {
       replacements: [
         { search: "Lorem", replace: "LOREM" },
         { search: /ip/g, replace: "op" },
+        { search: "op", replace: (m) => m.toUpperCase() },
         {
           search: /(e)([lt])/g,
           replace: (m, p1, p2) => p1.toUpperCase() + p2,
@@ -27,7 +28,7 @@ describe("fileReplacer", () => {
     })
 
     expect(await readFileAsync({ src: tmpPath })).toEqual(
-      "LOREM opsum dolor sit amEt,\nconsectEtur adopiscing Elit.\n"
+      "LOREM OPsum dolor sit amEt,\nconsectEtur adopiscing Elit.\n"
     )
   })
 })
