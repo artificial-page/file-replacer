@@ -4,11 +4,13 @@ export type ReplacementConditionType = (
   body: string
 ) => boolean
 
-export type ReplacementOutputElementType = [
-  string | RegExp,
-  string | ((substring: string, ...args: any[]) => string),
-  ReplacementConditionType?
-]
+export interface ReplacementOutputElementType {
+  search: string | RegExp
+  replace:
+    | string
+    | ((substring: string, ...args: any[]) => string)
+  condition?: ReplacementConditionType
+}
 
 export type ReplacementOutputType =
   ReplacementOutputElementType[]
@@ -21,38 +23,47 @@ export async function fileReplacer({
   src: string
   dest: string
   replacements?: ReplacementOutputType
-  createOnly?: boolean
 }): Promise<void> {
-  await new Promise<void>((resolve, reject) => {
-    readFile(src, "utf8", async (err, data) => {
-      if (err) {
-        return reject(err)
+  let data = await readFileAsync({ src })
+
+  if (replacements) {
+    for (const {
+      search,
+      replace,
+      condition,
+    } of replacements) {
+      if (!condition || condition(data)) {
+        data = data.replace(search, replace as string)
       }
+    }
+  }
 
-      if (replacements) {
-        for (const [
-          search,
-          replace,
-          condition,
-        ] of replacements) {
-          if (!condition || condition(data)) {
-            if (typeof replace === "string") {
-              data = data.replace(search, replace)
-            } else {
-              data = data.replace(search, replace)
-            }
-          }
-        }
-      }
+  await writeFileAsync({ dest, data })
+}
 
-      writeFile(dest, data, "utf8", (err) => {
-        if (err) {
-          reject(err)
-        }
+export async function readFileAsync({
+  src,
+}: {
+  src: string
+}): Promise<string> {
+  return await new Promise<string>((resolve, reject) => {
+    readFile(src, "utf8", async (err, data) =>
+      err ? reject(err) : resolve(data)
+    )
+  })
+}
 
-        resolve()
-      })
-    })
+export async function writeFileAsync({
+  dest,
+  data,
+}: {
+  dest: string
+  data: string
+}): Promise<void> {
+  return await new Promise<void>((resolve, reject) => {
+    writeFile(dest, data, "utf8", (err) =>
+      err ? reject(err) : resolve()
+    )
   })
 }
 

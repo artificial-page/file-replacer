@@ -1,9 +1,13 @@
-# File replacer
+# 🚂 File Replacer
 
-🚂 Replace strings in files
+Replace strings in files
 
-## Install
+## ⚙️ Install
 
 ```bash
 npm install file-replacer
 ```
+
+## 🏃 Usage
+
+[See `fileReplacerSpec.ts`](src/fileReplacerSpec.ts) for usage.
