@@ -1,19 +1,18 @@
 import expect from "expect"
-import fileReplacer, {
-  readFileAsync,
-  writeFileAsync,
-} from "./fileReplacer"
+import fsExtra from "fs-extra"
+import fileReplacer from "./fileReplacer"
 
 describe("fileReplacer", () => {
   it("works", async () => {
     const tmpPath = "/tmp/fileReplacerSpec.txt"
 
-    await writeFileAsync({
-      dest: tmpPath,
-      data: "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.\n",
-    })
+    await fsExtra.writeFile(
+      tmpPath,
+      "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.\n"
+    )
 
     await fileReplacer({
+      fsExtra,
       src: tmpPath,
       dest: tmpPath,
       replacements: [
@@ -37,7 +36,9 @@ describe("fileReplacer", () => {
       ],
     })
 
-    expect(await readFileAsync({ src: tmpPath })).toEqual(
+    expect(
+      (await fsExtra.readFile(tmpPath)).toString()
+    ).toEqual(
       "BOREM OPsum dolor sit amEt,\nconsectEtur adopiscing Elit.\n"
     )
   })

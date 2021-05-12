@@ -5,7 +5,7 @@ Replace strings in files
 ## ⚙️ Install
 
 ```bash
-npm install file-replacer
+npm install file-replacer fs-extra
 ```
 
 ## 🏃 Usage

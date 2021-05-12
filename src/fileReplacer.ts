@@ -1,4 +1,5 @@
-import { readFile, writeFile } from "fs"
+import path from "path"
+import fsExtraType from "fs-extra"
 
 export type ReplacementOutputType = {
   search: string | RegExp
@@ -9,15 +10,19 @@ export type ReplacementOutputType = {
 }[]
 
 export async function fileReplacer({
+  fsExtra,
   src,
   dest,
   replacements,
+  createOnly,
 }: {
+  fsExtra: typeof fsExtraType
   src: string
   dest: string
   replacements?: ReplacementOutputType
+  createOnly?: boolean
 }): Promise<void> {
-  let data = await readFileAsync({ src })
+  let data = (await fsExtra.readFile(src)).toString()
 
   if (replacements) {
     for (const {
@@ -31,33 +36,11 @@ export async function fileReplacer({
     }
   }
 
-  await writeFileAsync({ dest, data })
-}
+  await fsExtra.ensureDir(path.dirname(dest))
 
-export async function readFileAsync({
-  src,
-}: {
-  src: string
-}): Promise<string> {
-  return await new Promise<string>((resolve, reject) => {
-    readFile(src, "utf8", async (err, data) =>
-      err ? reject(err) : resolve(data)
-    )
-  })
-}
-
-export async function writeFileAsync({
-  dest,
-  data,
-}: {
-  dest: string
-  data: string
-}): Promise<void> {
-  return await new Promise<void>((resolve, reject) => {
-    writeFile(dest, data, "utf8", (err) =>
-      err ? reject(err) : resolve()
-    )
-  })
+  if (!createOnly || !(await fsExtra.pathExists(dest))) {
+    await fsExtra.writeFile(dest, data)
+  }
 }
 
 export default fileReplacer
