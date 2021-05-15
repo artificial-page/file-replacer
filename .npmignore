@@ -1,0 +1,7 @@
+.eslintrc.json
+.mocharc.json
+.prettierrc
+.husky
+.vscode
+bin
+tsconfig.*
