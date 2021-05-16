@@ -16,6 +16,7 @@ export async function fileReplacer({
   dest,
   replacements,
   createOnly,
+  skipUnchanged,
 }: {
   fsExtra: typeof fsExtraType
   dest: string
@@ -23,8 +24,11 @@ export async function fileReplacer({
   data?: string
   replacements?: ReplacementOutputType
   createOnly?: boolean
+  skipUnchanged?: boolean
 }): Promise<void> {
   data = data ?? (await fsExtra.readFile(src)).toString()
+
+  const ogData = data
 
   if (replacements) {
     for (const {
@@ -41,7 +45,9 @@ export async function fileReplacer({
   await fsExtra.ensureDir(path.dirname(dest))
 
   if (!createOnly || !(await fsExtra.pathExists(dest))) {
-    await fsExtra.writeFile(dest, data)
+    if (!skipUnchanged || ogData !== data) {
+      await fsExtra.writeFile(dest, data)
+    }
   }
 }
 

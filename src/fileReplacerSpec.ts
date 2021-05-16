@@ -2,14 +2,14 @@ import expect from "expect"
 import fsExtra from "fs-extra"
 import fileReplacer from "./fileReplacer"
 
+export const lorem =
+  "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.\n"
+
 describe("fileReplacer", () => {
-  it("works", async () => {
+  it("replaces tmp file", async () => {
     const tmpPath = "/tmp/fileReplacerSpec.txt"
 
-    await fsExtra.writeFile(
-      tmpPath,
-      "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.\n"
-    )
+    await fsExtra.writeFile(tmpPath, lorem)
 
     await fileReplacer({
       fsExtra,
@@ -41,5 +41,32 @@ describe("fileReplacer", () => {
     ).toEqual(
       "BOREM OPsum dolor sit amEt,\nconsectEtur adopiscing Elit.\n"
     )
+  })
+
+  it("skips unchanged", async () => {
+    const tmpPath = "/tmp/fileReplacerUnchangedSpec.txt"
+
+    await fsExtra.remove(tmpPath)
+
+    await fileReplacer({
+      fsExtra,
+      data: lorem,
+      src: tmpPath,
+      dest: tmpPath,
+      skipUnchanged: true,
+    })
+
+    expect(await fsExtra.pathExists(tmpPath)).toBe(false)
+
+    await fileReplacer({
+      fsExtra,
+      data: lorem,
+      src: tmpPath,
+      dest: tmpPath,
+      skipUnchanged: true,
+      replacements: [{ search: "Lorem", replace: "LOREM" }],
+    })
+
+    expect(await fsExtra.pathExists(tmpPath)).toBe(true)
   })
 })
