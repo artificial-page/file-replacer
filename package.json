@@ -1,6 +1,6 @@
 {
   "name": "file-replacer",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Replace strings in files",
   "main": "./dist/cjs/fileReplacer.js",
   "scripts": {
