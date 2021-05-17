@@ -1,4 +1,6 @@
+import { ESLint } from "eslint"
 import expect from "expect"
+import path from "path"
 import fsExtra from "fs-extra"
 import fileReplacer from "./fileReplacer"
 
@@ -69,4 +71,33 @@ describe("fileReplacer", () => {
 
     expect(await fsExtra.pathExists(tmpPath)).toBe(true)
   })
+
+  it("lints source code", async () => {
+    const tmpPath = "/tmp/fileReplacerEslintSpec.ts"
+
+    await fsExtra.remove(tmpPath)
+
+    await fileReplacer({
+      data: "for(const x of [1,2]){console.log(x)}",
+      dest: tmpPath,
+      eslint: new ESLint({
+        fix: true,
+        overrideConfigFile: path.join(
+          __dirname,
+          "../../.eslintrc.json"
+        ),
+      }),
+      fsExtra,
+    })
+
+    const out = `
+for (const x of [1, 2]) {
+  console.log(x);
+}
+`
+
+    expect(
+      (await fsExtra.readFile(tmpPath)).toString()
+    ).toBe(out.trimStart())
+  }).timeout(10000)
 })

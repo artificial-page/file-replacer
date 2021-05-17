@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/artificial-page/file-replacer#readme",
   "devDependencies": {
+    "@types/eslint": "7.2.10",
     "@types/fs-extra": "9.0.11",
     "@types/mocha": "8.2.2",
     "@types/node": "15.0.2",

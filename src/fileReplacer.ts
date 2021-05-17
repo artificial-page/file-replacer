@@ -1,4 +1,5 @@
 import path from "path"
+import { ESLint } from "eslint"
 import fsExtraType from "fs-extra"
 
 export type ReplacementOutputType = {
@@ -10,16 +11,18 @@ export type ReplacementOutputType = {
 }[]
 
 export async function fileReplacer({
-  fsExtra,
   data,
-  src,
   dest,
+  eslint,
+  fsExtra,
+  src,
   replacements,
   createOnly,
   skipUnchanged,
 }: {
-  fsExtra: typeof fsExtraType
   dest: string
+  eslint?: ESLint
+  fsExtra: typeof fsExtraType
   src?: string
   data?: string
   replacements?: ReplacementOutputType
@@ -42,9 +45,16 @@ export async function fileReplacer({
     }
   }
 
-  await fsExtra.ensureDir(path.dirname(dest))
-
   if (!createOnly || !(await fsExtra.pathExists(dest))) {
+    await fsExtra.ensureDir(path.dirname(dest))
+
+    if (eslint) {
+      const lint = await eslint.lintText(data, {
+        filePath: dest,
+      })
+      data = lint[0]?.output || data
+    }
+
     if (!skipUnchanged || ogData !== data) {
       await fsExtra.writeFile(dest, data)
     }
