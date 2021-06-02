@@ -28,7 +28,7 @@ export async function fileReplacer({
   replacements?: ReplacementOutputType
   createOnly?: boolean
   skipUnchanged?: boolean
-}): Promise<void> {
+}): Promise<string> {
   data = data ?? (await fsExtra.readFile(src)).toString()
 
   const ogData = data
@@ -59,6 +59,8 @@ export async function fileReplacer({
       await fsExtra.writeFile(dest, data)
     }
   }
+
+  return data
 }
 
 export default fileReplacer
